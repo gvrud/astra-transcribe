@@ -1,0 +1,19 @@
+#!/bin/sh
+set -e
+
+HERE="$(dirname "$(readlink -f "$0")")"
+
+export PATH="$HERE/usr/bin:$PATH"
+export PYTHONPATH="$HERE/usr/lib/python3.11/site-packages"
+export LD_LIBRARY_PATH="$HERE/usr/lib:$HERE/usr/lib/python3.11/site-packages/PyQt5/Qt5/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+export QT_PLUGIN_PATH="$HERE/usr/lib/python3.11/site-packages/PyQt5/Qt5/plugins"
+export QT_QPA_PLATFORM_PLUGIN_PATH="$HERE/usr/lib/python3.11/site-packages/PyQt5/Qt5/plugins/platforms"
+export ASTRA_TRANSCRIBE_MODELS_DIR="$HERE/usr/share/astra-transcribe/models"
+export PYTHONDONTWRITEBYTECODE=1
+
+if [ "${1:-}" = "--cli" ]; then
+    shift
+    exec "$HERE/usr/bin/python3" -m multitool_transcriber.cli "$@"
+fi
+
+exec "$HERE/usr/bin/python3" -m multitool_transcriber "$@"

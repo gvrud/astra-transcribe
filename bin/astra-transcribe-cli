@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SCRIPT="$(readlink -f "${BASH_SOURCE[0]}")"
+ROOT="$(cd "$(dirname "$SCRIPT")/.." && pwd)"
+
+exec "$ROOT/.venv/bin/python" -m multitool_transcriber.cli "$@"

@@ -1,0 +1,13 @@
+[Desktop Entry]
+Type=Application
+Name=Astra Transcribe
+GenericName=Офлайн-транскрибация
+Comment=Распознавание речи, DOCX и краткое содержание
+Exec=astra-transcribe
+Icon=astra-transcribe
+Terminal=false
+Categories=AudioVideo;
+Keywords=транскрибация;распознавание;речь;аудио;vosk;саммари;
+StartupNotify=true
+StartupWMClass=astra-transcribe
+X-AppImage-Version=1.0.2

@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "astra-transcribe"
+version = "1.0.2"
+description = "Astra Transcribe: офлайн-распознавание речи, DOCX и краткое содержание для Astra Linux"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+dependencies = [
+    "vosk==0.3.45",
+    "av>=12,<19",
+    "python-docx>=1.1,<2",
+    "numpy>=1.24,<3",
+]
+
+[project.optional-dependencies]
+gui = ["PyQt5>=5.15,<6"]
+
+[project.scripts]
+astra-transcribe = "multitool_transcriber.gui.app:main"
+astra-transcribe-cli = "multitool_transcriber.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+multitool_transcriber = ["assets/*.svg", "assets/*.png"]

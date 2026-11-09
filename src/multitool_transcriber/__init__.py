@@ -1,0 +1,5 @@
+__version__ = "1.0.2"
+APP_ID = "astra-transcribe"
+LEGACY_APP_ID = "multitool-transcriber"
+APP_NAME = "Astra Transcribe"
+APP_SUBTITLE = "Офлайн-распознавание речи"
