@@ -4,7 +4,7 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 VERSION="$(sed -n 's/^__version__ = "\(.*\)"$/\1/p' "$ROOT/src/multitool_transcriber/__init__.py" | head -n 1)"
 if [ -z "$VERSION" ]; then
-    VERSION="1.0.2"
+    VERSION="1.0.3"
 fi
 
 PYTHON_VERSION="3.11.18"

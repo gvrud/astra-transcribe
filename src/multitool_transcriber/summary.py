@@ -89,10 +89,11 @@ def write_summary(
     *,
     capitalize: bool = True,
     overwrite: bool = True,
+    base_name: str | None = None,
 ) -> str:
     destination = Path(output_dir).expanduser()
     destination.mkdir(parents=True, exist_ok=True)
-    base = transcript.source.stem or "audio"
+    base = base_name if base_name else (transcript.source.stem or "audio")
     path = destination / f"{base}.summary.txt"
     if not overwrite:
         path = unique_path(path)

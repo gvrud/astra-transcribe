@@ -13,6 +13,7 @@ from multitool_transcriber.outputs import (
     render_json,
     render_srt,
     render_txt,
+    unique_base_name,
     write_outputs,
 )
 
@@ -66,6 +67,18 @@ class OutputTests(unittest.TestCase):
             self.assertTrue(Path(paths["docx"]).exists())
             document = Document(paths["docx"])
             self.assertTrue(any("Привет мир" in item.text for item in document.paragraphs))
+
+    def test_duplicate_stems_get_unique_outputs(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            used: set[str] = set()
+            first_base = unique_base_name("lecture", used)
+            second_base = unique_base_name("lecture", used)
+            first = write_outputs(sample_transcript(), temporary, ["txt"], base_name=first_base)
+            second = write_outputs(sample_transcript(), temporary, ["txt"], base_name=second_base)
+            self.assertEqual(Path(first["txt"]).name, "lecture.txt")
+            self.assertEqual(Path(second["txt"]).name, "lecture (2).txt")
+            self.assertTrue(Path(first["txt"]).exists())
+            self.assertTrue(Path(second["txt"]).exists())
 
     def test_comma_decimal_json(self):
         raw = '{"result":[{"conf":1,000000,"start":0,120000,"end":0,540000,"word":"родион"}]}'

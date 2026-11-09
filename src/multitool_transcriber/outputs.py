@@ -186,6 +186,22 @@ def unique_path(path: Path) -> Path:
         counter += 1
 
 
+def unique_base_name(base: str, used: set[str]) -> str:
+    name = Path(str(base or "audio")).name.strip() or "audio"
+    key = name.casefold()
+    if key not in used:
+        used.add(key)
+        return name
+    counter = 2
+    while True:
+        candidate = f"{name} ({counter})"
+        key = candidate.casefold()
+        if key not in used:
+            used.add(key)
+            return candidate
+        counter += 1
+
+
 def write_outputs(
     transcript: Transcript,
     output_dir: str | Path,
@@ -193,6 +209,7 @@ def write_outputs(
     *,
     capitalize: bool = True,
     overwrite: bool = True,
+    base_name: str | None = None,
 ) -> dict[str, str]:
     destination = Path(output_dir).expanduser()
     destination.mkdir(parents=True, exist_ok=True)
@@ -201,7 +218,7 @@ def write_outputs(
         "srt": render_srt,
         "json": render_json,
     }
-    base = transcript.source.stem or "audio"
+    base = base_name if base_name else (transcript.source.stem or "audio")
     result: dict[str, str] = {}
     for fmt in dict.fromkeys(item.lower().lstrip(".") for item in formats):
         if fmt != "docx" and fmt not in writers:

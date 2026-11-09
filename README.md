@@ -21,28 +21,28 @@
 ## Быстрый старт с AppImage
 
 ```bash
-chmod +x AstraTranscribe-1.0.2-x86_64.AppImage
-./AstraTranscribe-1.0.2-x86_64.AppImage
+chmod +x AstraTranscribe-1.0.3-x86_64.AppImage
+./AstraTranscribe-1.0.3-x86_64.AppImage
 ```
 
 Файл AppImage находится в каталоге `dist/`. Проверка контрольной суммы:
 
 ```bash
 cd dist
-sha256sum -c AstraTranscribe-1.0.2-x86_64.AppImage.sha256
+sha256sum -c AstraTranscribe-1.0.3-x86_64.AppImage.sha256
 ```
 
 Для запуска AppImage нужен FUSE. Если FUSE в системе недоступен, используйте:
 
 ```bash
-APPIMAGE_EXTRACT_AND_RUN=1 ./AstraTranscribe-1.0.2-x86_64.AppImage
+APPIMAGE_EXTRACT_AND_RUN=1 ./AstraTranscribe-1.0.3-x86_64.AppImage
 ```
 
 CLI внутри AppImage:
 
 ```bash
-./AstraTranscribe-1.0.2-x86_64.AppImage --cli --help
-./AstraTranscribe-1.0.2-x86_64.AppImage --cli audio.mp3 -o ~/Документы/Транскрипты -f all
+./AstraTranscribe-1.0.3-x86_64.AppImage --cli --help
+./AstraTranscribe-1.0.3-x86_64.AppImage --cli audio.mp3 -o ~/Документы/Транскрипты -f all
 ```
 
 AppImage собран для x86_64 и Astra Linux 1.8. Системный Python и PyQt5 для него не нужны. Компактная русская модель входит в образ; полную модель можно скачать из приложения.
@@ -136,7 +136,7 @@ astra-transcribe-cli --download-model vosk-model-small-ru-0.22
 ./build_appimage.sh
 ```
 
-Скрипт скачивает standalone Python 3.11.18, PyQt5 5.15.9, Vosk, PyAV, python-docx, NumPy и appimagetool, добавляет компактную русскую модель и собирает образ `dist/AstraTranscribe-1.0.2-x86_64.AppImage`. Нужны интернет, `curl` и `tar`; промежуточные файлы занимают около 750 МБ в `.build/`.
+Скрипт скачивает standalone Python 3.11.18, PyQt5 5.15.9, Vosk, PyAV, python-docx, NumPy и appimagetool, добавляет компактную русскую модель и собирает образ `dist/AstraTranscribe-1.0.3-x86_64.AppImage`. Нужны интернет, `curl` и `tar`; промежуточные файлы занимают около 750 МБ в `.build/`.
 
 Внутри AppImage:
 

@@ -8,7 +8,7 @@ from PyQt5.QtCore import QThread, pyqtSignal
 from .audio import probe
 from .engine import TranscriptionCancelled, VoskEngine
 from .models import is_vosk_model
-from .outputs import render_txt, write_outputs
+from .outputs import render_txt, unique_base_name, write_outputs
 from .summary import render_summary, write_summary
 
 
@@ -61,6 +61,7 @@ class TranscriptionWorker(QThread):
         succeeded = 0
         failed = 0
         cancelled = False
+        used_bases: set[str] = set()
         for index, path in enumerate(self._files):
             if self._cancel.is_set():
                 cancelled = True
@@ -77,12 +78,14 @@ class TranscriptionWorker(QThread):
                     on_partial=lambda text, i=index: self.file_partial.emit(i, text),
                     cancel=self._cancel,
                 )
+                base_name = unique_base_name(path.stem or "audio", used_bases)
                 outputs = write_outputs(
                     transcript,
                     self._output_dir,
                     self._formats,
                     capitalize=self._capitalize,
                     overwrite=self._overwrite,
+                    base_name=base_name,
                 )
                 text = render_txt(transcript, capitalize=self._capitalize)
                 summary_text = ""
@@ -95,6 +98,7 @@ class TranscriptionWorker(QThread):
                         self._output_dir,
                         capitalize=self._capitalize,
                         overwrite=self._overwrite,
+                        base_name=base_name,
                     )
                 except Exception as exc:
                     summary_error = str(exc).strip() or exc.__class__.__name__

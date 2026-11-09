@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "astra-transcribe"
-version = "1.0.2"
+version = "1.0.3"
 description = "Astra Transcribe: офлайн-распознавание речи, DOCX и краткое содержание для Astra Linux"
 requires-python = ">=3.9"
 license = { text = "MIT" }

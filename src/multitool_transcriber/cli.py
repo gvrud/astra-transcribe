@@ -18,7 +18,7 @@ from .models import (
     human_size,
     is_vosk_model,
 )
-from .outputs import render_txt, write_outputs
+from .outputs import render_txt, unique_base_name, write_outputs
 from .summary import write_summary
 
 
@@ -86,6 +86,7 @@ def main(argv=None) -> int:
     language = args.language or _language_for(model_path.name)
     failed = 0
     cancelled = False
+    used_bases: set[str] = set()
     try:
         for index, path in enumerate(files, start=1):
             if cancel.is_set():
@@ -104,12 +105,14 @@ def main(argv=None) -> int:
                 )
                 if callback is not None:
                     print("", file=sys.stderr)
+                base_name = unique_base_name(path.stem or "audio", used_bases)
                 outputs = write_outputs(
                     transcript,
                     output_dir,
                     formats,
                     capitalize=not args.no_capitalize,
                     overwrite=not args.no_overwrite,
+                    base_name=base_name,
                 )
                 summary_path = ""
                 if not args.no_summary:
@@ -119,6 +122,7 @@ def main(argv=None) -> int:
                             output_dir,
                             capitalize=not args.no_capitalize,
                             overwrite=not args.no_overwrite,
+                            base_name=base_name,
                         )
                     except Exception as exc:
                         print(

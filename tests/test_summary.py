@@ -1,8 +1,9 @@
+import tempfile
 import unittest
 from pathlib import Path
 
 from multitool_transcriber.engine import Segment, Transcript, Word
-from multitool_transcriber.summary import render_summary, summarize
+from multitool_transcriber.summary import render_summary, summarize, write_summary
 
 
 def make_transcript(texts):
@@ -54,6 +55,16 @@ class SummaryTests(unittest.TestCase):
         summary = render_summary(transcript)
         for part in summary.strip().split("\n\n"):
             self.assertTrue(part[0].isupper())
+
+    def test_summary_uses_custom_base_name(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            path = write_summary(
+                make_transcript(TEXTS[:2]),
+                temporary,
+                base_name="lecture (2)",
+            )
+            self.assertEqual(Path(path).name, "lecture (2).summary.txt")
+            self.assertTrue(Path(path).exists())
 
 
 if __name__ == "__main__":

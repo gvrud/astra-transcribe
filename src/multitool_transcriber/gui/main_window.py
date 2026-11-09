@@ -4,7 +4,7 @@ import os
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from PyQt5.QtCore import QSettings, QStandardPaths, Qt, QTime, QUrl
+from PyQt5.QtCore import QSettings, QSignalBlocker, QStandardPaths, Qt, QTime, QUrl
 from PyQt5.QtGui import QBrush, QColor, QDesktopServices, QKeySequence
 from PyQt5.QtWidgets import (
     QAbstractItemView,
@@ -84,6 +84,7 @@ class MainWindow(QMainWindow):
         self._finished_count = 0
         self._current_fraction = 0.0
         self._fatal_message = ""
+        self._follow_active = False
         self._settings = QSettings("Astra Transcribe", "Astra Transcribe")
         legacy_settings = QSettings("MultiTool", "Transcriber")
         if not self._settings.allKeys():
@@ -975,6 +976,7 @@ class MainWindow(QMainWindow):
         self._finished_count = 0
         self._current_fraction = 0.0
         self._fatal_message = ""
+        self._follow_active = True
         self.overall.setRange(0, 100)
         self.overall.setValue(0)
         lowercase = model.name.lower()
@@ -1042,6 +1044,12 @@ class MainWindow(QMainWindow):
     def _on_file_started(self, index: int, duration: float) -> None:
         if not 0 <= index < len(self.entries):
             return
+        if self._follow_active and self.table.currentRow() != index:
+            blocker = QSignalBlocker(self.table)
+            self.table.selectRow(index)
+            del blocker
+            self._display_entry(index)
+            self._update_download_action()
         entry = self.entries[index]
         entry.status = "running"
         entry.duration = duration
@@ -1168,6 +1176,7 @@ class MainWindow(QMainWindow):
         self._log(f"{entry.path.name}: ошибка — {message}")
 
     def _on_all_finished(self, succeeded: int, failed: int, cancelled: bool) -> None:
+        self._follow_active = False
         self._set_busy(False)
         if self._fatal_message:
             self._fatal_message = ""
@@ -1178,10 +1187,12 @@ class MainWindow(QMainWindow):
             self._set_status("Остановлено")
             self._log("Работа остановлена")
             return
+        message = f"Готово: {succeeded} из {total}"
         if failed:
-            self._set_status(f"Готово: {succeeded} из {total}, ошибок: {failed}")
-        else:
-            self._set_status(f"Готово: {succeeded} из {total}")
+            message += f", ошибок: {failed}"
+        if total > 1:
+            message += ". Выберите файл в очереди, чтобы посмотреть результат."
+        self._set_status(message)
         self.overall.setValue(100 if total else 0)
         self._log(f"Завершено: успешно {succeeded}, ошибок {failed}")
 
@@ -1196,6 +1207,8 @@ class MainWindow(QMainWindow):
         self._update_actions()
 
     def _show_selected(self) -> None:
+        if self._busy:
+            self._follow_active = False
         row = self.table.currentRow()
         if 0 <= row < len(self.entries):
             self._display_entry(row)

@@ -10,4 +10,4 @@ Categories=AudioVideo;
 Keywords=транскрибация;распознавание;речь;аудио;vosk;саммари;
 StartupNotify=true
 StartupWMClass=astra-transcribe
-X-AppImage-Version=1.0.2
+X-AppImage-Version=1.0.3

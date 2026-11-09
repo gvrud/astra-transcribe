@@ -1,4 +1,4 @@
-__version__ = "1.0.2"
+__version__ = "1.0.3"
 APP_ID = "astra-transcribe"
 LEGACY_APP_ID = "multitool-transcriber"
 APP_NAME = "Astra Transcribe"
